@@ -1,66 +1,63 @@
-*{
-    padding: 0;
-    margin: 0;
-    font-family: staatliches;
+* {
+  padding: 0;
+  margin: 0;
+  font-family: staatliches;
 }
 
 @import "./sections/header";
 @import "./sections/footer";
 @import "./sections/cards";
 
-
 body {
-    background-image: url("../assets/pokemon-charizard-green-background-scaled.jpg");
-    margin: 0;
-    font-family: staatliches;
-    color: white;
-    display: flex;
-    flex-wrap: wrap;
-    align-content: space-between;
-    justify-content: center;
+  background-image: url("../assets/pokemon-charizard-green-background-scaled.jpg");
+  margin: 0;
+  font-family: staatliches;
+  color: white;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-between;
+  justify-content: center;
+}
+
+.container {
+  padding: 40px;
+  text-align: center;
+  justify-content: center;
+  &_img {
+    margin-bottom: -25px;
+    width: 75px;
+    @media (min-width: 1024px) {
+      width: 100px;
     }
+  }
+}
+input {
+  margin: 20px 0px;
+  width: 70%;
+}
+h1 {
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 54px;
+  margin: 50px;
+  font-size: 30px;
+  display: inline-block;
+  text-shadow: black 1px 1px;
+  @media (min-width: 1024px) {
+    font-size: 50px;
+  }
+}
 
-  .container {
-    padding: 40px;
-    text-align: center;
-    justify-content: center;
-    &_img{
-        margin-bottom: -25px;
-        width: 75px;
-        @media (min-width: 1024px){
-            width: 100px;
-        }   
-    }
-  }
-  input{
-    margin: 20px 0px;
-    width: 70%;
-  }
-  h1 {
-    text-transform: uppercase;
-    text-align: center;
-    font-size: 54px;
-    margin: 50px;
-    font-size: 30px;
-    display: inline-block;
-    text-shadow: black 1px 1px;
-    @media (min-width: 1024px){
-        font-size: 50px;
-    }    
+#pokedex {
+  padding-inline-start: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-gap: 20px;
+}
 
-  }
- 
-  #pokedex {
-    padding-inline-start: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    grid-gap: 20px;
-  }
-
-  .input{
-    padding: 10px;
-    font-size: 15px;
-    margin: 40px 40px 50px 40px;
-    width: 70%;
-
-  }
+.input {
+  padding: 10px;
+  font-size: 15px;
+  margin: 40px 40px 50px 40px;
+  width: 70%;
+}

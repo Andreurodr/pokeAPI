@@ -1,90 +1,90 @@
-
-//Declaro las variables globales que puedo necesitar para hacer el proyecto 
+//Declaro las variables globales que puedo necesitar para hacer el proyecto
 //Selecciono donde va a ir la lista y el input con querySelector.
-//Guardo el valor de la api principal en una variable.
+//Declaro la cantidad de pokemons que hay en la api para hacer el fetch/llamada
 
 const pokeList$$ = document.querySelector("#pokedex");
 const input$$ = document.querySelector("input");
-const api = "https://pokeapi.co/api/v2/pokemon/";
-// const arrayPokemons = [];
+const pokemonNumber = 150;
 
-//Hago una función mixta get and init. No me retornaba el resultado deseado separando ambas funciones, así que de la misma respuesta que nos retorna el fetch en formato .json empiezo a invocar las funciones que me ejecutan todo el código(mapear y dibujar). De este modo, en cada iteración me mapea y dibuja el código deseado.
+//Hago una función get con llamada a la api y devuelvo el resultado en formato JSON
 
-const getAndInit = async () => {
-    for (let i = 1; i <= 150; i++) {
-    const apiUrl = api + i
-    const response = await fetch(apiUrl)
-    const pokeResponse = await response.json()
-    // arrayPokemons.push(pokeResponse)
-    
-    const mapear = mapPokemon(pokeResponse)
-    // console.log(pokeResponse);
+const getPokemon = async (num) => {
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${num}`);
+  const pokeResponse = await response.json();
+  // console.log(pokeResponse)
+  return pokeResponse;
+};
 
-    const dibujar = draw(mapear)
-    // searchInput(arrayPokemons)
-    }
-}
+//Función para mapear del .json los parámetros que necesito.
 
-//Función para obtener del .json los parámetros que necesito. Intenté usar el .map con un array (pusheando las iteraciones anteriores al array) pero me daba Undefined al trabajar o mostrar por consola valores de ese array. Por ese motivo, no me retornaba el resultado esperado e hice esta función sin map.
+const mapPokemon = (pokemon) => {
+  return pokemon.map((pokemons) => ({
+    nombre: pokemons.name,
+    imagen: pokemons.sprites["front_default"],
+    tipo: pokemons.types.map((type) => type.type.name).join(", "),
+    peso: pokemons.weight,
+  }));
+};
 
-const mapPokemon = (pokemons) => ({
-        nombre: pokemons.name,
-        imagen: pokemons.sprites['front_default'],
-        tipo: pokemons.types.map((type) => type.type.name).join(', '),
-        peso: pokemons.weight,
-    })
-
-//Para dibujar utilizo innerHTML y así insertar código HTML en cada iteración del bucle que saca cada una de las apis correctas.
+//Para dibujar utilizo innerHTML y así insertar código HTML para cada pokemon mapeado desde el fetch o desde la búsqueda.
 
 const draw = (pokemons) => {
-    pokeList$$.innerHTML += `<div class="card">
+  pokeList$$.innerHTML = "";
+  for (const pokemon of pokemons) {
+    const div$$ = document.createElement("div");
+    div$$.setAttribute("class", "card");
+    div$$.innerHTML = `
     <div class="content">
         <div class="imgBx">
-            <img src="${pokemons.imagen}">
+            <img src="${pokemon.imagen}">
         </div>
         <div class="contentBx">
-            <h3>${pokemons.nombre}</h3>
+            <h3>${pokemon.nombre}</h3>
         </div>
     </div>
     <ul class="sci">
-        <li>Type: ${pokemons.tipo}</li>
-        <li>Wheight: ${pokemons.peso} kg</li>
+        <li>Type: ${pokemon.tipo}</li>
+        <li>Wheight: ${pokemon.peso} kg</li>
     </ul>
-</div>`
-    }
+</div>`;
+    pokeList$$.appendChild(div$$);
+  }
+};
 
-    //CÓDIGO HTML CARTAS ANTERIOR DISEÑO
-    // `<li class="card"><h2 class="card_title">${pokemons.nombre}</h2>
-    // <img class="card_image" src="${pokemons.imagen}" alt="">
-    // <p class="card_subtitle">Type: ${pokemons.tipo}</p><p class="card_subtitle">Wheight: ${pokemons.peso} kg</p></li>`
+//Declaro la función que va a manejar el input
 
-//No he logrado hacer el buscador por el tipo de dato que me devuelve tanto si hago un array pusheando como si lo mapeo de la forma en la que está(undefined al trabajar con él).
+const searchInput = (mappedPokemons) => {
+  input$$.addEventListener("input", () =>
+    searchPokemon(mappedPokemons, input$$.value)
+  );
+};
 
-const searchInput = (pokemons) => {
-    input$$.addEventListener("input", () => searchPokemon(pokemons, input$$.value))
-}
+//Declaro la función de búsqueda por nombre, que se invoca dentro de la función manejadora del input anterior
 
-//////////////
+const searchPokemon = (mappedPokemons, filter) => {
+  let filteredPokemons = mappedPokemons.filter((pokemon) =>
+    pokemon.nombre.toLowerCase().includes(filter.toLowerCase())
+  );
+  console.log(filteredPokemons);
+  draw(filteredPokemons);
+};
 
-const searchPokemon = (pokemons, filtro) => {
-//     pokeList$$.innerHTML = "";
-    draw(pokemons.filter((pokemon) => pokemon.name.toLowerCase().includes(filtro.toLowerCase())))
-}
+//Declaro la función init que va a empezar a iterar y ejecutar la función de llamada y el resto de funciones consecutivamente.
 
-//Intentos:
+const init = async () => {
+  const pokemonsArray = [];
+  for (let i = 1; i <= pokemonNumber; i++) {
+    pokemonsArray.push(await getPokemon(i));
+  }
 
-// const get = async () => {
-//     for (let i = 1; i <= 150; i++) {
-//     const apiUrl = api + i
-//     const response = await fetch(apiUrl)
-//     const pokeResponse = await response.json()
-//  }}
+  const mapped = mapPokemon(pokemonsArray);
+  console.log(mapped);
 
-// const init = async () => {
-//     const obtener = await get()
-//     const mapear = mapPokemon(obtener)
-//     const dibujar = await draw(mapPokemon)
-//     const buscar = searchInput(arrayPokemons)
-// }
+  draw(mapped);
 
-getAndInit()
+  searchInput(mapped);
+};
+
+//Invoco la función init para ejecutar toda la aplicación
+
+init();
